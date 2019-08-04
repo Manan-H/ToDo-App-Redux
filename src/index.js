@@ -4,12 +4,15 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.css';
-import AllTodos from './components/AllTodos';
-import Todo from './components/Todo';
-import EditTodo from './components/EditTodo';
-import AddTodo from './components/AddTodo';
+import store from "./store";
+import {Provider} from 'react-redux';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+    <Provider store={store}>
+    <App />
+    </Provider>, 
+    document.getElementById('root')
+);
 
 
 serviceWorker.unregister();

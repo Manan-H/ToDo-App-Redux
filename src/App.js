@@ -4,79 +4,51 @@ import { BrowserRouter as Router} from 'react-router-dom';
 import Route from 'react-router-dom/Route';
 import AllTodos from './components/AllTodos';
 import EditTodo from './components/EditTodo';
+import { connect } from 'react-redux';
+import { editTodo } from './actions/todoActions';
+
 
 
 class App extends Component {
-  constructor() {
-    super();
+
+  constructor(props) {
+    super(props);
     this.state = {
-      input: '',
-      data: [
-          "ToDo 1",
-          "ToDo 2"
-        ]
+      edited: ''
     };
+    this.onChange = this.onChange.bind(this);
+    this.editTodo = this.editTodo.bind(this);
   }
 
-  componentDidMount() {
-    fetch('https://jsonplaceholder.typicode.com/todos')
-      .then(response => response.json())
-      .then(todos => {
-        let data = [...this.state.data, ...todos.map((todo) => todo.title)];
-        this.setState({ data });
-      })
+
+  editTodo = (id) => {
+    this.props.editTodo( id, this.state.edited);
+    this.setState({ edited: ""});
   }
 
-  getEditTodoInput = (e) => {
-    let input = e.target.value;
-    this.setState({input});
+  onChange(e) {
+    this.setState({edited: e.target.value });
   }
-
-  saveEditedTodo = (index) => {
-    let array = this.state.data;
-    array[index] = this.state.input;
-    this.setState({
-        data: array,
-        input: ''
-    });
-  }
-
-  getAddTodoInput = (e) => {
-    let input = e.target.value;
-    this.setState({input});
-  }
-
-  addTodo = () => {
-    this.setState({
-        data: [...this.state.data, this.state.input],
-        input: ''
-    });
-  }
-
-  deleteTodo = (index) => {
-    let array = this.state.data;
-    let data = array.filter(item => item !== array[index]);
-    this.setState({data});
-  }
-
 
   render() {
     return (
 
-      <Router>
-        <Route path = "/" exact render={({match}) => (
-          <AllTodos getAddTodoInput={this.getAddTodoInput} addTodo={this.addTodo}
-          deleteTodo={this.deleteTodo} value={this.state.input} data={this.state.data}/>
-        )}/>
-        <Route path = "/edit/:id" exact  render={({match}) => (
-          <EditTodo getEditTodoInput={this.getEditTodoInput} saveEditedTodo={this.saveEditedTodo} 
-          value={this.state.input} id={match.params.id} data={this.state.data} />
-        )}/>
-      </Router>
+        <Router>
+          <Route path = "/" exact render={({}) => (
+            <AllTodos />
+          )}/>
+          <Route path = "/edit/:id" exact  render={({match}) => (
+            <EditTodo id={match.params.id} onChange={this.onChange} editTodo={this.editTodo} 
+            edited={this.state.edited} todos={this.props.todos} />
+          )}/>
+        </Router>
 
     );
   }
 }
 
+const mapStateToProps = state => ({
+  todos: state.todos.items
+});
 
-export default App;
+export default connect(mapStateToProps, { editTodo })(App);

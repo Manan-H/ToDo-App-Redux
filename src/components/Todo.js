@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 
 
-function Todo({ todo, index, onDelete }) {
+function Todo({ todo, index, onDelete}) {
     return (
         
         <li>
@@ -10,12 +10,12 @@ function Todo({ todo, index, onDelete }) {
             <Link to = {`/edit/${index}`}>
                 <button className = "btn btn-primary">Edit</button>
             </Link> 
-            <button className = "btn btn-danger" onClick={() => {onDelete(index)}}>Delete</button>
+            <button className = "btn btn-danger" onClick={() => {onDelete(todo)}}>Delete</button>
         </li>
 
         
 
     )
-  }
+}
  
 export default Todo;
